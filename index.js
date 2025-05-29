@@ -4,13 +4,15 @@ import axios from "axios";
 const app = express();
 app.use(express.json());
 
+// توکن HuggingFace خودت رو اینجا بزار
+ 
 const HF_TOKEN = "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";  // توکن مستقیم
-
 app.post("/chat", async (req, res) => {
   const userMessage = req.body.message;
+
   try {
     const response = await axios.post(
-      "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.1",
+      "https://api-inference.huggingface.co/models/gpt2",
       { inputs: userMessage },
       {
         headers: {
@@ -19,6 +21,7 @@ app.post("/chat", async (req, res) => {
       }
     );
 
+    // داده مدل معمولاً به شکل آرایه است، اگر تغییر داشت می‌تونی اینجا اصلاح کنی
     const reply = response.data?.[0]?.generated_text || "پاسخی دریافت نشد";
     res.json({ reply });
   } catch (error) {
@@ -29,7 +32,7 @@ app.post("/chat", async (req, res) => {
 
 app.get("/", (req, res) => {
   res.send(`
-    <h2>چت رایگان با مدل HuggingFace</h2>
+    <h2>چت رایگان با مدل GPT-2 روی HuggingFace</h2>
     <textarea id="input" rows="4" cols="50"></textarea><br>
     <button onclick="sendMessage()">ارسال</button>
     <pre id="response"></pre>
