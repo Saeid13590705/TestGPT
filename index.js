@@ -4,6 +4,12 @@ import axios from "axios";
 const app = express();
 app.use(express.json());
 
+// لاگ همه درخواست‌ها
+app.use((req, res, next) => {
+  console.log(`Request: ${req.method} ${req.url}`);
+  next();
+});
+
 const HF_TOKEN = "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";
 
 app.post("/chat", async (req, res) => {
@@ -54,7 +60,6 @@ app.get("/", (req, res) => {
   `);
 });
 
-// این ردیف رو حتماً اضافه کن
 app.use((req, res) => {
   res.status(404).send("صفحه مورد نظر یافت نشد");
 });
