@@ -28,7 +28,8 @@ app.post("/chat", async (req, res) => {
   }
 });
 
-app.get("/", (req, res) => {
+ app.get("/", (req, res) => {
+  res.send("سرور داره کار میکنه، روت اصلی فعال است");
   res.send(`
     <h2>چت رایگان با مدل HuggingFace</h2>
     <textarea id="input" rows="4" cols="50"></textarea><br>
