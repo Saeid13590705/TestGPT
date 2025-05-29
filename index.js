@@ -4,7 +4,6 @@ import axios from "axios";
 const app = express();
 app.use(express.json());
 
-// توکن مستقیم خودت
 const HF_TOKEN = "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";
 
 app.post("/chat", async (req, res) => {
@@ -22,10 +21,10 @@ app.post("/chat", async (req, res) => {
     console.log("Response from HF:", response.data);
 
     const reply = response.data?.[0]?.generated_text || "پاسخی دریافت نشد";
-    return res.json({ reply });  // حتما return برای جلوگیری از ارسال چندباره جواب
+    return res.json({ reply });
   } catch (error) {
     console.error(error?.response?.data || error.message);
-    return res.status(500).json({ error: "مشکلی پیش آمده است" });  // حتما return اینجا هم باشه
+    return res.status(500).json({ error: "مشکلی پیش آمده است" });
   }
 });
 
@@ -55,7 +54,7 @@ app.get("/", (req, res) => {
   `);
 });
 
-// اگر روتی پیدا نشد این‌جا هندل کن
+// catch-all 404 بعد از روت‌ها
 app.use((req, res) => {
   res.status(404).send("Not Found");
 });
