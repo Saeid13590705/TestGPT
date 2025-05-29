@@ -4,8 +4,7 @@ import axios from "axios";
 const app = express();
 app.use(express.json());
 
-// توکن HuggingFace ثابت
-const HF_TOKEN = "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";
+const HF_TOKEN = "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";  // توکن مستقیم
 
 app.post("/chat", async (req, res) => {
   const userMessage = req.body.message;
@@ -23,19 +22,18 @@ app.post("/chat", async (req, res) => {
 
     console.log("Response from HF:", response.data);
 
-    // مدل GPT2 معمولا پاسخ در فیلد generated_text است
-    const reply = response.data?.generated_text || "پاسخی دریافت نشد";
-    res.json({ reply });
+    const reply = response.data?.[0]?.generated_text || "پاسخی دریافت نشد";
+    return res.json({ reply });  // فقط یک بار جواب می‌دهیم
   } catch (error) {
     console.error(error?.response?.data || error.message);
-    res.status(500).json({ error: "مشکلی پیش آمده است" });
+    return res.status(500).json({ error: "مشکلی پیش آمده است" });
   }
 });
 
 app.get("/", (req, res) => {
   res.send(`
     <h2>چت رایگان با مدل GPT-2 روی HuggingFace</h2>
-    <textarea id="input" rows="4" cols="50" placeholder="سوال خود را اینجا بنویسید"></textarea><br>
+    <textarea id="input" rows="4" cols="50"></textarea><br>
     <button onclick="sendMessage()">ارسال</button>
     <pre id="response"></pre>
 
