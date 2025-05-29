@@ -4,12 +4,7 @@ import axios from "axios";
 const app = express();
 app.use(express.json());
 
-// لاگ همه درخواست‌ها
-app.use((req, res, next) => {
-  console.log(`Request: ${req.method} ${req.url}`);
-  next();
-});
-
+// توکن مستقیم خودت
 const HF_TOKEN = "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";
 
 app.post("/chat", async (req, res) => {
@@ -27,10 +22,10 @@ app.post("/chat", async (req, res) => {
     console.log("Response from HF:", response.data);
 
     const reply = response.data?.[0]?.generated_text || "پاسخی دریافت نشد";
-    return res.json({ reply });
+    return res.json({ reply });  // حتما return برای جلوگیری از ارسال چندباره جواب
   } catch (error) {
     console.error(error?.response?.data || error.message);
-    return res.status(500).json({ error: "مشکلی پیش آمده است" });
+    return res.status(500).json({ error: "مشکلی پیش آمده است" });  // حتما return اینجا هم باشه
   }
 });
 
@@ -60,9 +55,10 @@ app.get("/", (req, res) => {
   `);
 });
 
+// اگر روتی پیدا نشد این‌جا هندل کن
 app.use((req, res) => {
-  res.status(404).send("صفحه مورد نظر یافت نشد");
+  res.status(404).send("Not Found");
 });
 
-const PORT = process.env.PORT || 10000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
