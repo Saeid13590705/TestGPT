@@ -14,8 +14,8 @@ const MODELS = {
   MISTRAL: 'mistralai/Mistral-7B-Instruct-v0.1'
 };
 
-const HF_TOKEN = process.env.HF_TOKEN || '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';
 
+const HF_TOKEN = "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"; // توکن جدید را اینجا قرار دهید
 // میدلور برای بررسی توکن
 app.use((req, res, next) => {
   if (!HF_TOKEN || HF_TOKEN === 'your_default_token_here') {
@@ -27,27 +27,24 @@ app.use((req, res, next) => {
 });
 
 // روت چت با قابلیت انتخاب مدل
-app.post('/chat', async (req, res) => {
+app.post("/chat", async (req, res) => {
   try {
-    const { message, model = 'GPT2_FA' } = req.body;
-    
-    if (!message) {
-      return res.status(400).json({ error: 'پیام نمی‌تواند خالی باشد' });
-    }
-
-    const selectedModel = MODELS[model] || MODELS.GPT2_FA;
-    const prompt = `پرسش: ${message}\nپاسخ:`;
-
-    const response = await queryHuggingFace({
-      model: selectedModel,
-      inputs: prompt,
-      parameters: {
-        max_new_tokens: 150,
-        temperature: 0.7,
-        repetition_penalty: 1.2,
-        do_sample: true
+    const response = await axios.post(
+      "https://api-inference.huggingface.co/models/tiiuae/falcon-7b-instruct",
+      { inputs: req.body.message },
+      {
+        headers: {
+          "Authorization": `Bearer ${HF_TOKEN}`, // اینجا را بررسی کنید
+          "Content-Type": "application/json"
+        }
       }
-    });
+    );
+    // ...
+  } catch (error) {
+    console.error("خطای دقیق:", error.response?.data);
+    res.status(500).json({ error: "مشکل در احراز هویت API" });
+  }
+});
 
     let reply = response.generated_text.replace(prompt, '').trim();
     
