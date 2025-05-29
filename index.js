@@ -4,9 +4,9 @@ import axios from "axios";
 const app = express();
 app.use(express.json());
 
-// توکن HuggingFace خودت رو اینجا بزار
- 
-const HF_TOKEN = "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";  // توکن مستقیم
+// توکن HuggingFace ثابت
+const HF_TOKEN = "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";
+
 app.post("/chat", async (req, res) => {
   const userMessage = req.body.message;
 
@@ -21,8 +21,10 @@ app.post("/chat", async (req, res) => {
       }
     );
 
-    // داده مدل معمولاً به شکل آرایه است، اگر تغییر داشت می‌تونی اینجا اصلاح کنی
-    const reply = response.data?.[0]?.generated_text || "پاسخی دریافت نشد";
+    console.log("Response from HF:", response.data);
+
+    // مدل GPT2 معمولا پاسخ در فیلد generated_text است
+    const reply = response.data?.generated_text || "پاسخی دریافت نشد";
     res.json({ reply });
   } catch (error) {
     console.error(error?.response?.data || error.message);
@@ -33,7 +35,7 @@ app.post("/chat", async (req, res) => {
 app.get("/", (req, res) => {
   res.send(`
     <h2>چت رایگان با مدل GPT-2 روی HuggingFace</h2>
-    <textarea id="input" rows="4" cols="50"></textarea><br>
+    <textarea id="input" rows="4" cols="50" placeholder="سوال خود را اینجا بنویسید"></textarea><br>
     <button onclick="sendMessage()">ارسال</button>
     <pre id="response"></pre>
 
@@ -56,5 +58,5 @@ app.get("/", (req, res) => {
   `);
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
