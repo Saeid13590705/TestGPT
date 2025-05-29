@@ -12,7 +12,7 @@ app.post("/chat", async (req, res) => {
   try {
     
  const response = await axios.post(
-  "https://api-inference.huggingface.co/models/EleutherAI/gpt-neo-1.3B",
+  "https://api-inference.huggingface.co/models/tiiuae/falcon-7b-instruct",
   { inputs: userMessage },
   {
     headers: {
@@ -20,8 +20,6 @@ app.post("/chat", async (req, res) => {
     },
   }
 );
-
-
     console.log("Response from HF:", response.data);
 
     const reply = response.data?.[0]?.generated_text || "پاسخی دریافت نشد";
