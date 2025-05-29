@@ -1,9 +1,10 @@
-const express = require("express");
-const axios = require("axios");
+import express from "express";
+import axios from "axios";
 const app = express();
 
 app.use(express.json());
 
+// API چت
 app.post("/chat", async (req, res) => {
   const userMessage = req.body.message;
 
@@ -29,8 +30,41 @@ app.post("/chat", async (req, res) => {
   }
 });
 
+// صفحه ساده چت
 app.get("/", (req, res) => {
-  res.send("ChatGPT Server is Running");
+  res.send(`
+    <!DOCTYPE html>
+    <html>
+    <head><title>ChatGPT Simple Chat</title></head>
+    <body>
+      <h1>چت با ChatGPT</h1>
+      <textarea id="input" rows="4" cols="50" placeholder="سوال خود را بنویس"></textarea><br>
+      <button onclick="sendMessage()">ارسال</button>
+      <h3>پاسخ:</h3>
+      <pre id="response"></pre>
+
+      <script>
+        async function sendMessage() {
+          const message = document.getElementById('input').value;
+          const responseBox = document.getElementById('response');
+          responseBox.textContent = "در حال ارسال...";
+
+          try {
+            const res = await fetch('/chat', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ message })
+            });
+            const data = await res.json();
+            responseBox.textContent = data.reply || "پاسخی دریافت نشد";
+          } catch {
+            responseBox.textContent = "خطا در ارسال درخواست";
+          }
+        }
+      </script>
+    </body>
+    </html>
+  `);
 });
 
 const PORT = process.env.PORT || 3000;
