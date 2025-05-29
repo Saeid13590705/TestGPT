@@ -22,8 +22,9 @@ app.post("/chat", async (req, res) => {
 
     const reply = response.data?.[0]?.generated_text || "پاسخی دریافت نشد";
     return res.json({ reply });
+
   } catch (error) {
-    console.error(error?.response?.data || error.message);
+    console.error("Error from HF:", error?.response?.data || error.message);
     return res.status(500).json({ error: "مشکلی پیش آمده است" });
   }
 });
@@ -54,7 +55,7 @@ app.get("/", (req, res) => {
   `);
 });
 
-// catch-all 404 بعد از روت‌ها
+// catch-all 404 باید آخر باشه و فقط یه بار
 app.use((req, res) => {
   res.status(404).send("Not Found");
 });
