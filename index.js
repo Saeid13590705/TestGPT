@@ -4,6 +4,8 @@ import axios from "axios";
 const app = express();
 app.use(express.json());
 
+const HF_TOKEN = "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";  // توکن مستقیم
+
 app.post("/chat", async (req, res) => {
   const userMessage = req.body.message;
   try {
@@ -12,7 +14,7 @@ app.post("/chat", async (req, res) => {
       { inputs: userMessage },
       {
         headers: {
-          Authorization: `Bearer ${process.env.HF_TOKEN}`,
+          Authorization: `Bearer ${HF_TOKEN}`,
         },
       }
     );
