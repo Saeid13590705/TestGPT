@@ -4,66 +4,53 @@ const app = express();
 
 app.use(express.json());
 
-// چت API
 app.post("/chat", async (req, res) => {
   const userMessage = req.body.message;
 
   try {
     const response = await axios.post(
-      "https://api.openai.com/v1/chat/completions",
+      "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.1",
       {
-        model: "gpt-3.5-turbo",
-        messages: [{ role: "user", content: userMessage }],
+        inputs: userMessage,
       },
       {
         headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+          Authorization: `Bearer ${process.env.HF_TOKEN}`,
         },
       }
     );
 
-    res.json({ reply: response.data.choices[0].message.content });
-  } catch (error) {
-    console.error(error.response?.data || error.message);
+    const reply = response.data?.[0]?.generated_text || "پاسخی دریافت نشد";
+    res.json({ reply });
+  } catch (err) {
+    console.error(err?.response?.data || err.message);
     res.status(500).json({ error: "مشکلی پیش آمده است" });
   }
 });
 
-// صفحه چت ساده
 app.get("/", (req, res) => {
   res.send(`
-    <!DOCTYPE html>
-    <html>
-    <head><title>ChatGPT Chat</title></head>
-    <body>
-      <h1>چت با ChatGPT</h1>
-      <textarea id="input" rows="4" cols="50" placeholder="سوال خود را بنویس"></textarea><br>
-      <button onclick="sendMessage()">ارسال</button>
-      <h3>پاسخ:</h3>
-      <pre id="response"></pre>
+    <h2>چت رایگان با مدل HuggingFace</h2>
+    <textarea id="input" rows="4" cols="50"></textarea><br>
+    <button onclick="sendMessage()">ارسال</button>
+    <pre id="response"></pre>
 
-      <script>
-        async function sendMessage() {
-          const message = document.getElementById('input').value;
-          const responseBox = document.getElementById('response');
-          responseBox.textContent = "در حال ارسال...";
+    <script>
+      async function sendMessage() {
+        const input = document.getElementById("input").value;
+        const resBox = document.getElementById("response");
+        resBox.innerText = "در حال پاسخ‌گویی...";
 
-          try {
-            const res = await fetch('/chat', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ message })
-            });
-            const data = await res.json();
-            responseBox.textContent = data.reply || "پاسخی دریافت نشد";
-          } catch {
-            responseBox.textContent = "خطا در ارسال درخواست";
-          }
-        }
-      </script>
-    </body>
-    </html>
+        const res = await fetch("/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: input }),
+        });
+
+        const data = await res.json();
+        resBox.innerText = data.reply || "پاسخی دریافت نشد";
+      }
+    </script>
   `);
 });
 
