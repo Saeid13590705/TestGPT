@@ -4,7 +4,7 @@ const app = express();
 
 app.use(express.json());
 
-// API چت
+// چت API
 app.post("/chat", async (req, res) => {
   const userMessage = req.body.message;
 
@@ -30,12 +30,12 @@ app.post("/chat", async (req, res) => {
   }
 });
 
-// صفحه ساده چت
+// صفحه چت ساده
 app.get("/", (req, res) => {
   res.send(`
     <!DOCTYPE html>
     <html>
-    <head><title>ChatGPT Simple Chat</title></head>
+    <head><title>ChatGPT Chat</title></head>
     <body>
       <h1>چت با ChatGPT</h1>
       <textarea id="input" rows="4" cols="50" placeholder="سوال خود را بنویس"></textarea><br>
