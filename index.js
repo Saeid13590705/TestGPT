@@ -10,13 +10,17 @@ app.post("/chat", async (req, res) => {
   const userMessage = req.body.message;
 
   try {
-    const response = await axios.post(
-      "https://api-inference.huggingface.co/models/gpt2",
-      { inputs: userMessage },
-      {
-        headers: { Authorization: `Bearer ${HF_TOKEN}` },
-      }
-    );
+    
+ const response = await axios.post(
+  "https://api-inference.huggingface.co/models/EleutherAI/gpt-neo-1.3B",
+  { inputs: userMessage },
+  {
+    headers: {
+      Authorization: `Bearer ${HF_TOKEN}`,
+    },
+  }
+);
+
 
     console.log("Response from HF:", response.data);
 
