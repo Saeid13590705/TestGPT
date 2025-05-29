@@ -4,7 +4,7 @@ import axios from "axios";
 const app = express();
 app.use(express.json());
 
-const HF_TOKEN = "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";  // توکن مستقیم
+const HF_TOKEN = "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";
 
 app.post("/chat", async (req, res) => {
   const userMessage = req.body.message;
@@ -14,16 +14,14 @@ app.post("/chat", async (req, res) => {
       "https://api-inference.huggingface.co/models/gpt2",
       { inputs: userMessage },
       {
-        headers: {
-          Authorization: `Bearer ${HF_TOKEN}`,
-        },
+        headers: { Authorization: `Bearer ${HF_TOKEN}` },
       }
     );
 
     console.log("Response from HF:", response.data);
 
     const reply = response.data?.[0]?.generated_text || "پاسخی دریافت نشد";
-    return res.json({ reply });  // فقط یک بار جواب می‌دهیم
+    return res.json({ reply });
   } catch (error) {
     console.error(error?.response?.data || error.message);
     return res.status(500).json({ error: "مشکلی پیش آمده است" });
@@ -54,6 +52,11 @@ app.get("/", (req, res) => {
       }
     </script>
   `);
+});
+
+// این ردیف رو حتماً اضافه کن
+app.use((req, res) => {
+  res.status(404).send("صفحه مورد نظر یافت نشد");
 });
 
 const PORT = process.env.PORT || 10000;
